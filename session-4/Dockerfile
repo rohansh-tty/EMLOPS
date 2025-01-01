@@ -1,0 +1,11 @@
+FROM python:3.10.2-slim 
+
+WORKDIR /app 
+
+COPY pyproject.toml pyproject.toml   
+
+RUN pip install uv && uv pip install --system -r pyproject.toml 
+
+COPY . . 
+
+CMD ["python", "src/train.py"]
