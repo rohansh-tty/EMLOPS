@@ -52,15 +52,18 @@ class DogBreedDataModule(pl.LightningDataModule):
                                std=[0.229, 0.224, 0.225])
         ])
         try:
-            print('Prepping data for dog breed')
+            # dataset_url = "https://drive.google.com/uc?export=download&id=1bZ-R20E61_ztBqI7JGyohrJfjwzB5Zrt"
+            # os.getenv('DATASET_URL')
             dataset_url = os.getenv('DATASET_URL')
+            # os.getenv('DATASET_URL')
             file_id = dataset_url.split('=')[-1]
             filename = os.getenv('DATASET_FILENAME')
             root = self.data_dir
+            # filename = 'dog-breed-image-dataset.zip' #os.getenv('DATASET_FILENAME')
+            root = self.data_dir
             download_file_from_google_drive(file_id, root, filename)
             fpath = os.path.join(root, filename) # this is what download_file_from_google_drive does
-            ## extract downloaded dataset
-            print(f'FPATH FOR DATASET >>> {fpath}')
+            # extract downloaded dataset
             from_path = os.path.expanduser(fpath)
             extract_archive(from_path)
         except Exception as e:
@@ -71,10 +74,6 @@ class DogBreedDataModule(pl.LightningDataModule):
 
     def setup(self, stage=None):
         # Called on every GPU
-        print(f'setup called...dataa dir: {self.data_dir}')
-        print(f'train list dir : {os.listdir(os.path.join(self.data_dir, "train"))}')
-        print(f'test list dir : {os.listdir(os.path.join(self.data_dir, "test"))}')
-        
         self.train_dataset = DogBreedDataset(
             os.path.join(self.data_dir, 'train'),
             transform=self.transform
@@ -90,36 +89,15 @@ class DogBreedDataModule(pl.LightningDataModule):
         
     def prepare_data(self):
         pass
-        # try:
-        #     print('Prepping data for dog breed')
-        #     dataset_url = os.getenv('DATASET_URL')
-        #     file_id = dataset_url.split('=')[-1]
-        #     filename = os.getenv('DATASET_FILENAME')
-        #     root = self._dl_path
-        #     download_file_from_google_drive(file_id, root, filename)
-        #     # download_and_extract_archive(
-        #     #     url = os.getenv('DATASET_URL'),
-        #     #     # url="https://storage.googleapis.com/mledu-datasets/cats_and_dogs_filtered.zip",
-        #     #     download_root=self._dl_path,
-        #     #     remove_finished=True
-        #     # )
-        #     fpath = os.path.join(root, filename) # this is what download_file_from_google_drive does
-        #     ## extract downloaded dataset
-        #     print(f'FPATH FOR DATASET >>> {fpath}')
-        #     from_path = os.path.expanduser(fpath)
-        #     extract_archive(from_path)
-        # except Exception as e:
-        #     import traceback
-        #     print(f'failed to prep {traceback.format_exc()}')
 
     def train_dataloader(self):
         return DataLoader(self.train_dataset, batch_size=self.batch_size, 
-                         shuffle=True, num_workers=4)
+                         shuffle=True)#, num_workers=4)
 
     def val_dataloader(self):
-        return DataLoader(self.val_dataset, batch_size=self.batch_size, 
-                         num_workers=4)
+        return DataLoader(self.val_dataset, batch_size=self.batch_size)
+                        #  num_workers=4)
     
     def test_dataloader(self):
-            return DataLoader(self.test_dataset, batch_size=self.batch_size, 
-                         num_workers=4)
+            return DataLoader(self.test_dataset, batch_size=self.batch_size) 
+                        #  num_workers=4)

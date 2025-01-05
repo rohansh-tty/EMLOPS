@@ -1,0 +1,37 @@
+version: "3.9"
+
+x-common-configuration: &common-configuration
+  env_file: ".env"
+  volumes:
+      - model_checkpoints:/app/src/checkpoints
+      - model_logs:/app/src/logs
+      - .:/app
+services:
+  train:
+    build: 
+      context: . 
+      dockerfile: model-train/Dockerfile.train 
+    <<: *common-configuration
+    container_name: s4-train
+  eval:
+    build:
+      context: . 
+      dockerfile: model-eval/Dockerfile.eval
+    <<:  *common-configuration 
+    container_name: s4-eval
+    depends_on:
+      train:
+        condition: service_completed_successfully
+
+  infer:
+      build:
+        context: . 
+        dockerfile: model-infer/Dockerfile.infer
+      <<:  *common-configuration 
+      container_name: s4-infer
+      depends_on:
+        train:
+          condition: service_completed_successfully
+volumes:
+  model_checkpoints:
+  model_logs:
