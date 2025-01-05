@@ -172,6 +172,10 @@ docker-compose down
 
 ---
 
+## Results 
+
+![](/session-4/assets/final_prediction.png)
+
 ## Contributing
 
 Feel free to fork this repository and submit pull requests to contribute to the project.
