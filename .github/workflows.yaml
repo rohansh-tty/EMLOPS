@@ -1,8 +1,11 @@
-name: CI
-description: CI-CD for Dog Breed Classification
+name: EMLOPS-CI-CD-FLOW
+
+on:
+  push:
+    branches: [main]
 
 jobs:
-  build-and-push-docker-image:
+  build:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
     steps:
