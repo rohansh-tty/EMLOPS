@@ -1,0 +1,33 @@
+name: CI
+description: CI-CD for Dog Breed Classification
+
+jobs:
+  build-and-push-docker-image:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
+
+        - name: Login into dockerhub registry
+          uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+          with:
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ github.token }}
+
+        - name: Extract tags and labels for Docker 
+          id: meta
+          uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+          with:
+            images: ghcr.io/${{ github.repository }}
+
+        - name: Build and push Docker image
+          uses: docker/build-push-action@1.4.4
+          with:
+            context: .
+            file: Dockerfile
+            push: true
+            tags: ghcr.io/${{ github.repository }}:${{ steps.meta.outputs.tags }}
+            labels: ghcr.io/${{ github.repository }}:${{ steps.meta.outputs.labels }}
+

@@ -1,0 +1,5 @@
+{
+    "yaml.schemas": {
+        "https://json.schemastore.org/github-action.json": "file:///home/rohan/Desktop/rohan/projects/emlops/session-5/.github/workflows.yaml"
+    }
+}
